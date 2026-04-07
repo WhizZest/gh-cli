@@ -966,10 +966,7 @@ gh pr create --title "Feature: Add new functionality"
 # Create with title and body
 gh pr create \
   --title "Feature: Add new functionality" \
-  --body "This PR adds..."
-
-# Fill body from template
-gh pr create --body-file .github/PULL_REQUEST_TEMPLATE.md
+  --body-file .github/PULL_REQUEST_TEMPLATE.md
 
 # Set base branch
 gh pr create --base main
@@ -1148,7 +1145,7 @@ gh pr edit 123
 gh pr edit 123 --title "New title"
 
 # Edit body
-gh pr edit 123 --body "New description"
+gh pr edit 123 --body-file new-description.md
 
 # Add labels
 gh pr edit 123 --add-label bug,enhancement

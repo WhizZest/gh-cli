@@ -84,7 +84,7 @@ gh repo view --web
 gh issue list
 
 # Create an issue
-gh issue create --title "Bug report" --body "Description of the bug"
+gh issue create --title "Bug report" --body-file issue-body.md
 
 # View an issue
 gh issue view 123
@@ -97,7 +97,7 @@ gh issue view 123
 gh pr list
 
 # Create a pull request
-gh pr create --title "Fix bug" --body "Description of changes"
+gh pr create --title "Fix bug" --body-file pr-body.md
 
 # Review a pull request
 gh pr review 456 --approve
