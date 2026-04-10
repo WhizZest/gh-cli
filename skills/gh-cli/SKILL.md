@@ -968,6 +968,10 @@ gh pr create \
   --title "Feature: Add new functionality" \
   --body-file .github/PULL_REQUEST_TEMPLATE.md
 
+**⚠️ CRITICAL: Always use `--body-file` for PR body content**
+
+**NEVER use `--body` parameter!** The `--body` parameter causes encoding issues with special characters and markdown formatting. Always create a local markdown file first and use `--body-file`.
+
 # Set base branch
 gh pr create --base main
 
@@ -1045,23 +1049,54 @@ gh pr list --sort created --order desc
 
 ### View Pull Request
 
-```bash
-# View PR
-gh pr view 123
+**⚠️ CRITICAL: Always export PR content to local file for viewing**
 
-# View with comments
-gh pr view 123 --comments
+**NEVER view PR comments directly in terminal!** Terminal output may be truncated, causing loss of important information like review comments, code suggestions, and error details. Always export to a local file first.
+
+**Standard PR Viewing Workflow:**
+
+```bash
+# Step 1: Export PR content to local file
+gh pr view 123 --comments > pr-123-view.md
+
+# Step 2: Read the file to view complete content
+cat pr-123-view.md
+
+# Step 3: Clean up (optional)
+rm pr-123-view.md
+```
+
+**⚠️ PowerShell Redirection Warning:**
+
+In PowerShell, `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable:
+
+```powershell
+# CORRECT in PowerShell
+gh pr view 123 --comments > pr-123-view.md
+
+# WRONG: Out-File may produce incomplete output
+gh pr view 123 --comments | Out-File -FilePath pr-123-view.md  # ❌
+
+# WRONG: 2>&1 may produce empty output
+gh pr view 123 --comments > pr-123-view.md 2>&1  # ❌
+```
+
+**Other viewing options:**
+
+```bash
+# View PR basic info (short output, safe for terminal)
+gh pr view 123
 
 # View in browser
 gh pr view 123 --web
 
-# JSON output
-gh pr view 123 --json title,body,state,author,commits,files
+# JSON output to file
+gh pr view 123 --json title,body,state,author,commits,files > pr-123.json
 
-# View diff
-gh pr view 123 --json files --jq '.files[].path'
+# View diff to file
+gh pr diff 123 > pr-123.patch
 
-# View with jq query
+# View specific fields
 gh pr view 123 --json title,state --jq '"\(.title): \(.state)"'
 ```
 
