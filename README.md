@@ -1,10 +1,21 @@
-# gh-cli Skill
+# GitHub CLI & Git Workflow Skills
 
-Comprehensive GitHub CLI (gh) reference skill for AI agents.
+AI agent skills for GitHub operations and Git workflow best practices.
 
 ## Overview
 
-This skill provides complete documentation and reference for GitHub CLI (`gh`), enabling AI agents to work seamlessly with GitHub from the command line. It covers all major GitHub operations including repositories, issues, pull requests, Actions, projects, releases, gists, codespaces, organizations, and extensions.
+This repository contains two complementary skills for AI agents working with Git and GitHub:
+
+1. **[gh-cli](#gh-cli-skill)** - Comprehensive GitHub CLI (`gh`) reference covering all major GitHub operations
+2. **[git-commit-push](#git-commit-push-skill)** - Git commit & push workflow guidelines ensuring safe, atomic commits with user approval
+
+## Skills
+
+### gh-cli Skill
+
+Comprehensive GitHub CLI (gh) reference skill for AI agents.
+
+**Description:** Complete documentation and reference for GitHub CLI (`gh`), enabling AI agents to work seamlessly with GitHub from the command line. Covers repositories, issues, pull requests, Actions, projects, releases, gists, codespaces, organizations, and extensions.
 
 **Key Features:**
 - **Modular Design**: SKILL.md serves as a navigation hub (189 lines), with detailed content in 12 modular reference documents
@@ -12,11 +23,10 @@ This skill provides complete documentation and reference for GitHub CLI (`gh`), 
 - **Complete Command Reference**: All `gh` commands with examples and options
 - **Best Practices**: Critical warnings and workflows for common pitfalls
 
-## Skill Structure
-
+**Structure:**
 ```
 skills/gh-cli/
-├── SKILL.md                    # Main navigation hub (189 lines)
+├── SKILL.md                    # Main navigation hub
 └── references/                 # Modular reference documents
     ├── auth.md                 # Authentication & account management
     ├── repo.md                 # Repository operations
@@ -32,71 +42,88 @@ skills/gh-cli/
     └── config.md               # Configuration & environment setup
 ```
 
-### How It Works
+**Features:**
+- Authentication Guide ([auth.md](skills/gh-cli/references/auth.md))
+- Repository Management ([repo.md](skills/gh-cli/references/repo.md))
+- Issue Tracking ([issues.md](skills/gh-cli/references/issues.md))
+- Pull Request Workflow ([prs.md](skills/gh-cli/references/prs.md)) ⚠️ **Critical warnings inside**
+- GitHub Actions ([actions.md](skills/gh-cli/references/actions.md))
+- Project Boards ([projects.md](skills/gh-cli/references/projects.md))
+- Releases & Packages ([releases.md](skills/gh-cli/references/releases.md))
+- Codespaces ([codespaces.md](skills/gh-cli/references/codespaces.md))
+- Search ([search.md](skills/gh-cli/references/search.md))
+- Organization Tools ([advanced.md](skills/gh-cli/references/advanced.md))
+- Extensions & API Access ([advanced.md](skills/gh-cli/references/advanced.md))
 
-1. **SKILL.md** provides quick start guide, critical best practices, and links to detailed references
-2. **Reference documents** contain comprehensive command documentation organized by domain
-3. AI agents load only the relevant reference files based on the task at hand
-4. This modular approach reduces token usage and improves response quality
+### git-commit-push Skill
 
-## Features
+Git commit & push workflow guidelines ensuring safe, user-approved commits.
 
-- **Authentication Guide**: Setup and manage GitHub authentication (see [auth.md](skills/gh-cli/references/auth.md))
-- **Repository Management**: Create, clone, fork, and manage repositories (see [repo.md](skills/gh-cli/references/repo.md))
-- **Issue Tracking**: Create, list, view, and manage issues (see [issues.md](skills/gh-cli/references/issues.md))
-- **Pull Request Workflow**: Full PR lifecycle management (see [prs.md](skills/gh-cli/references/prs.md)) ⚠️ **Critical warnings inside**
-- **GitHub Actions**: Workflow management and CI/CD operations (see [actions.md](skills/gh-cli/references/actions.md))
-- **Project Boards**: Kanban-style project management (see [projects.md](skills/gh-cli/references/projects.md))
-- **Releases & Packages**: Version management and package publishing (see [releases.md](skills/gh-cli/references/releases.md))
-- **Codespaces**: Cloud development environment management (see [codespaces.md](skills/gh-cli/references/codespaces.md))
-- **Search**: Code, commits, issues, PRs, and repository search (see [search.md](skills/gh-cli/references/search.md))
-- **Organization Tools**: Team and organization management (see [advanced.md](skills/gh-cli/references/advanced.md))
-- **Extensions**: Extend gh functionality with community extensions (see [advanced.md](skills/gh-cli/references/advanced.md))
-- **API Access**: Direct REST and GraphQL API calls (see [advanced.md](skills/gh-cli/references/advanced.md))
+**Description:** 规范化Git提交与推送流程，确保遵循用户审核、原子提交、精准文件选择等核心原则。基于实际错误案例总结的最佳实践。
 
-## Critical Best Practices
+**Core Principles:**
 
-### ⚠️ Always Use `--body-file` for PR/Issue Content
+1. **User Approval Required** - Never execute `git commit` or `git push` without explicit user consent. Each operation requires separate approval.
+2. **Atomic Commits** - One logical change per commit. Complete a feature, then ask to commit.
+3. **Precise File Selection** - Never use `git add -A` or `git add .`. Always specify exact files to commit.
+4. **Temporary File Management** - Use `<workspace_dir>/temp/` directory for temporary files; never commit them accidentally.
+5. **Structured Commit Messages** - Follow conventional commit format; use temp files for multi-line messages.
 
-**NEVER use `--body` parameter!** Command-line argument parsing fails with special characters, especially backticks (\`) used in code blocks. This causes escaping issues that result in garbled text or parsing errors.
-
+**Key Guidelines:**
 ```bash
-# ✅ CORRECT
-gh pr create --title "Feature" --body-file description.md
+# ✅ CORRECT: Specify files explicitly
+git add src/file1.ts src/file2.ts
 
-# ❌ WRONG - backticks cause escaping issues
-gh pr create --title "Feature" --body "Use `code()` function..."
+# ❌ WRONG: Adds all files including temporaries
+git add -A && git commit -m "..."
+
+# ✅ CORRECT: Check before committing
+git status
+git diff --cached
+
+# ✅ CORRECT: Multi-line commit messages via file
+git commit --file=<workspace_dir>/temp/git-commit-msg.txt
 ```
 
-### ⚠️ Export PR Content to Files Before Viewing
+## Repository Structure
 
-**NEVER view PR comments directly in terminal!** Terminal output may be truncated, causing loss of important information like review comments and code suggestions.
-
-```bash
-# ✅ CORRECT workflow
-gh pr view 123 --comments > pr-123.md
-cat pr-123.md
-
-# ❌ WRONG (may lose data)
-gh pr view 123 --comments
 ```
-
-See [prs.md](skills/gh-cli/references/prs.md) for more details.
+skills/
+├── gh-cli/                     # GitHub CLI reference skill
+│   ├── SKILL.md                # Navigation hub
+│   └── references/             # 12 modular reference documents
+│       ├── auth.md
+│       ├── repo.md
+│       ├── issues.md
+│       ├── prs.md
+│       ├── actions.md
+│       ├── projects.md
+│       ├── releases.md
+│       ├── gists.md
+│       ├── codespaces.md
+│       ├── search.md
+│       ├── advanced.md
+│       └── config.md
+└── git-commit-push/            # Git workflow guidelines skill
+    └── SKILL.md                # Commit/push best practices
+```
 
 ## Installation
 
 ### For AI Agents
 
-Install this skill using your agent's skill manager:
+Install skills using your agent's skill manager:
 
 ```bash
-# Using skills.sh
-npx skills add https://github.com/WhizZest/gh-cli
+# Using skills.sh (install both skills)
+npx skills add https://github.com/WhizZest/agent-git-skills
 
-# Or manually copy the SKILL.md file to your agent's skills directory
+# Or manually copy the skill directories to your agent's skills directory
 ```
 
-### GitHub CLI Installation
+### Prerequisites
+
+#### GitHub CLI (for gh-cli skill)
 
 ```bash
 # macOS
@@ -115,69 +142,80 @@ winget install --id GitHub.cli
 gh --version
 ```
 
-## Quick Start
+#### Git (for git-commit-push skill)
 
-### Authentication
+Git must be installed and configured with user identity:
 
 ```bash
-# Login to GitHub
-gh auth login
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+```
 
-# Check authentication status
+## Quick Start
+
+### Using gh-cli Skill
+
+#### Authentication
+
+```bash
+gh auth login
 gh auth status
 ```
 
-### Repository Operations
+#### Repository Operations
 
 ```bash
-# Create a new repository
 gh repo create my-project --public --description "My awesome project"
-
-# Clone a repository
 gh repo clone owner/repo
-
-# View repository info
 gh repo view --web
 ```
 
-### Issue Management
+#### Issue & PR Management
 
 ```bash
-# List issues
 gh issue list
-
-# Create an issue
 gh issue create --title "Bug report" --body-file issue-body.md
-
-# View an issue
-gh issue view 123
-```
-
-### Pull Requests
-
-```bash
-# List pull requests
 gh pr list
-
-# Create a pull request
 gh pr create --title "Fix bug" --body-file pr-body.md
-
-# Review a pull request
-gh pr review 456 --approve
 ```
 
-### GitHub Actions
+### Using git-commit-push Skill
+
+The `git-commit-push` skill should be invoked automatically when an AI agent needs to commit or push changes. It enforces:
+
+1. **Ask user before committing** - Show which files will be committed
+2. **Get approval on commit message** - Let user review the message content
+3. **Specify files explicitly** - Never use `git add -A`
+4. **Use temp directory** - Keep temporary files out of commits
+
+## Critical Best Practices
+
+### ⚠️ Always Use `--body-file` for PR/Issue Content
+
+**NEVER use `--body` parameter!** Command-line argument parsing fails with special characters, especially backticks (\`) used in code blocks.
 
 ```bash
-# List workflows
-gh workflow list
+# ✅ CORRECT
+gh pr create --title "Feature" --body-file description.md
 
-# Run a workflow
-gh workflow run "CI Build"
-
-# View workflow runs
-gh run list
+# ❌ WRONG - backticks cause escaping issues
+gh pr create --title "Feature" --body "Use \`code()\` function..."
 ```
+
+### ⚠️ Export PR Content to Files Before Viewing
+
+**NEVER view PR comments directly in terminal!** Terminal output may be truncated, causing loss of important information.
+
+```bash
+# ✅ CORRECT workflow
+gh pr view 123 --comments > pr-123.md
+cat pr-123.md
+
+# ❌ WRONG (may lose data)
+gh pr view 123 --comments
+```
+
+See [prs.md](skills/gh-cli/references/prs.md) for more details.
 
 ## Usage Examples
 
@@ -210,18 +248,36 @@ gh project item-add 123 --url https://github.com/org/repo/issues/456
 gh project item-edit --id ITEM_ID --status-field-id FIELD_ID --single-select-option-id OPTION_ID
 ```
 
+## How the Skills Work Together
+
+These two skills are designed to complement each other:
+
+| Scenario | Skill Used | Purpose |
+|----------|-----------|---------|
+| Clone/create repos | **gh-cli** | Repository operations |
+| Manage issues & PRs | **gh-cli** | GitHub issue/PR workflow |
+| Run CI/CD actions | **gh-cli** | GitHub Actions management |
+| Commit local changes | **git-commit-push** | Safe, approved commits |
+| Push to remote | **git-commit-push** | User-approved push |
+| Code review | **gh-cli** | PR review and comments |
+| Release management | **gh-cli** | Version releases |
+
 ## Topics
 
 - github-cli
 - gh
+- git
 - ai-agent
 - skill
 - cli-reference
 - automation
+- workflow
+- commit-guidelines
 
 ## Version
 
-Based on GitHub CLI version 2.85.0 (January 2026)
+- **gh-cli skill**: Based on GitHub CLI version 2.85.0 (January 2026)
+- **git-commit-push skill**: Best practices from real-world error cases
 
 ## Contributing
 
@@ -229,10 +285,11 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ## License
 
-This skill is provided as-is for use with AI agents. Refer to the official GitHub CLI documentation for licensing details.
+This repository is provided as-is for use with AI agents. Refer to respective tool documentation for licensing details.
 
 ## Resources
 
 - [Official GitHub CLI Documentation](https://cli.github.com/manual/)
 - [GitHub CLI GitHub Repository](https://github.com/cli/cli)
 - [GitHub CLI Releases](https://github.com/cli/cli/releases)
+- [Git Documentation](https://git-scm.com/doc)
