@@ -1,0 +1,167 @@
+---
+name: "git-commit-push"
+description: "Git提交与推送规范指南。执行git commit/push前必须调用，确保遵循用户审核、原子提交、精准文件选择等原则。"
+---
+
+# Git Commit & Push 规范指南
+
+本skill总结了Git提交与推送的最佳实践、核心原则和工作流规范，所有操作都基于实际错误案例总结。
+
+## 核心原则
+
+### 1. 用户审核原则（最重要）
+
+```
+❌ 禁止擅自执行 git commit 或 git push
+✅ 每次提交前必须征询用户意见
+✅ 让用户审核 commit message 内容
+✅ 如果没有特别说明，用户的同意只针对一次操作，下次需重新询问
+```
+
+### 2. 原子提交原则
+
+```
+✅ 每个commit只做一件事
+✅ 功能开发完成后立即询问用户是否提交，提前拟好commit message内容
+```
+
+### 3. 文件选择原则
+
+```
+❌ 禁止使用 git add -A 或 git add .
+✅ 明确指定要提交的文件
+✅ 提交前必须执行 git status 检查
+✅ 临时文件应创建在`<workspace_dir>/temp/`目录下
+✅ 提交前如果发现有临时文件，必须先将它们移动到 `<workspace_dir>/temp/`目录下
+✅ 确认只有核心业务逻辑文件
+```
+
+## Git Commit 最佳实践
+
+### 正确做法
+
+**1. 明确指定文件**
+```bash
+# 方式1：明确指定文件
+git add src/weread/catalog.ts src/weread/outline.ts
+
+# 方式2：使用通配符
+git add src/weread/*.ts
+
+# 方式3：交互式添加
+git add -p
+```
+
+**2. 提交前检查**
+```bash
+# 查看待提交文件
+git status
+
+# 如果发现有临时文件，先移动到 `<workspace_dir>/temp/` 目录下
+mv temp-file.txt <workspace_dir>/temp/
+
+# 查看暂存区差异
+git diff --cached
+```
+
+**3. 规范的 Commit Message**
+```
+<type>(<scope>): <subject>
+
+类型：
+- feat: 新功能
+- fix: 修复bug
+- refactor: 重构
+- docs: 文档
+- style: 格式
+- test: 测试
+- chore: 构建/工具
+```
+**重要：** 如果Commit Message超过2行，必须在 `<workspace_dir>/temp/`目录下创建commit message临时文件，提交方式为 `git commit --file=<workspace_dir>/temp/git-commit-msg.txt` 。
+
+### 常见错误
+
+**1. 盲目使用 git add -A**
+```bash
+# ❌ 错误：添加所有文件（包括临时文件、文档等）
+git add -A && git commit -m "..."
+
+# ✅ 正确：明确指定文件
+git add src/file1.ts src/file2.ts
+```
+
+**2. 临时文件混入提交**
+```bash
+# ❌ 临时文件创建在工作目录
+.git-commit-msg.txt
+.pr-description.md
+
+# ✅ 使用<workspace_dir>/temp/`临时目录
+<workspace_dir>/temp/git-commit-msg.txt
+```
+
+**3. 替换已创建PR的commit**
+如果commit已被push，且该分支已创建PR，禁止直接amend。
+
+## 撤销操作规范
+
+### 1. 撤销暂存
+
+```bash
+# ✅ 撤销特定文件的暂存
+git restore --staged <file>
+
+# ✅ 撤销所有暂存
+git restore --staged .
+```
+
+### 2. 撤销提交
+
+```bash
+# ✅ 撤销提交，保留修改
+git reset --soft HEAD~1
+
+# ⚠️ 撤销提交和暂存，保留工作区
+git reset HEAD~1
+
+# ❌ 危险：撤销并丢弃所有修改
+git reset --hard HEAD~1
+```
+
+### 3. 从Git中移除文件
+
+```bash
+# ✅ 从Git中移除，保留本地文件
+git rm --cached <file>
+
+# ❌ 删除文件并从Git中移除
+git rm <file>
+```
+
+## 检查清单
+
+### 提交前
+
+- [ ] 是否创建分支？
+- [ ] 是否征询用户意见？
+- [ ] 是否执行 git status 检查？
+- [ ] 是否已将临时文件移动到 `<workspace_dir>/temp/`目录下？
+- [ ] 是否明确指定文件？
+- [ ] 是否创建commit message临时文件？
+- [ ] Commit message 是否规范？
+- [ ] 是否超出PR范围？
+
+### 推送前
+
+- [ ] 是否征询用户意见？
+- [ ] 功能是否开发完成？
+- [ ] 测试是否通过？
+- [ ] 是否需要整理commit历史？
+
+## Git 安全协议
+
+- 不要更新git config
+- 不要在没有用户同意的情况下运行破坏性命令（如force reset）
+- 不要在没有用户同意的情况下跳过hooks（如--no-verify）
+- 不要强制推送到main/master分支
+- 如果hooks失败，修复并创建新的commit（不要amend）
