@@ -18,35 +18,21 @@ Comprehensive GitHub CLI (gh) reference skill for AI agents.
 **Description:** Complete documentation and reference for GitHub CLI (`gh`), enabling AI agents to work seamlessly with GitHub from the command line. Covers repositories, issues, pull requests, Actions, projects, releases, gists, codespaces, organizations, and extensions.
 
 **Key Features:**
-- **Modular Design**: SKILL.md serves as a navigation hub (189 lines), with detailed content in 12 modular reference documents
+- **Modular Design**: SKILL.md serves as a navigation hub (189 lines), with detailed content in 13 modular reference documents
 - **Progressive Disclosure**: Load only the documentation you need, reducing context window usage by 92%
 - **Complete Command Reference**: All `gh` commands with examples and options
 - **Best Practices**: Critical warnings and workflows for common pitfalls
 
 **Structure:**
-```
-skills/gh-cli/
-├── SKILL.md                    # Main navigation hub
-└── references/                 # Modular reference documents
-    ├── auth.md                 # Authentication & account management
-    ├── repo.md                 # Repository operations
-    ├── issues.md               # Issue management
-    ├── prs.md                  # Pull request workflows ⚠️ Critical warnings
-    ├── actions.md              # GitHub Actions (runs, workflows, secrets)
-    ├── projects.md             # GitHub Projects
-    ├── releases.md             # Release management
-    ├── gists.md                # Gist operations
-    ├── codespaces.md           # Codespaces management
-    ├── search.md               # Search functionality
-    ├── advanced.md             # API, extensions, aliases, labels, keys
-    └── config.md               # Configuration & environment setup
-```
+- **SKILL.md**: Navigation hub with modular document links (189 lines)
+- **references/**: 13 modular reference documents covering all `gh` commands - [See full file tree](#repository-structure)
 
 **Features:**
 - Authentication Guide ([auth.md](skills/gh-cli/references/auth.md))
 - Repository Management ([repo.md](skills/gh-cli/references/repo.md))
 - Issue Tracking ([issues.md](skills/gh-cli/references/issues.md))
 - Pull Request Workflow ([prs.md](skills/gh-cli/references/prs.md)) ⚠️ **Critical warnings inside**
+- PR Reviews Extension ([pr-reviews.md](skills/gh-cli/references/pr-reviews.md)) - Inline code review, review threads, gh-pr-review extension
 - GitHub Actions ([actions.md](skills/gh-cli/references/actions.md))
 - Project Boards ([projects.md](skills/gh-cli/references/projects.md))
 - Releases & Packages ([releases.md](skills/gh-cli/references/releases.md))
@@ -91,11 +77,12 @@ git commit --file=<workspace_dir>/temp/git-commit-msg.txt
 skills/
 ├── gh-cli/                     # GitHub CLI reference skill
 │   ├── SKILL.md                # Navigation hub
-│   └── references/             # 12 modular reference documents
+│   └── references/             # 13 modular reference documents
 │       ├── auth.md
 │       ├── repo.md
 │       ├── issues.md
-│       ├── prs.md
+│       ├── prs.md              # Pull request workflows ⚠️ Critical warnings
+│       ├── pr-reviews.md       # PR Reviews extension - Inline code review
 │       ├── actions.md
 │       ├── projects.md
 │       ├── releases.md
