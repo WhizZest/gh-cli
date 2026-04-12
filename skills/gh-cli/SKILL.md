@@ -70,6 +70,7 @@ This skill is organized into modular reference documents. Load only what you nee
 - **[Repositories](references/repo.md)** - Create, clone, fork, edit, delete repos
 - **[Issues](references/issues.md)** - Create, list, comment, manage issues
 - **[Pull Requests](references/prs.md)** - PR workflows, reviews, merges ⚠️ **Critical warnings inside**
+- **[PR Reviews (Extension)](references/pr-reviews.md)** - Inline code review, review threads, gh-pr-review extension
 
 ### Automation & CI/CD
 

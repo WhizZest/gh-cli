@@ -312,6 +312,15 @@ gh pr review 123 --comment --body "Some thoughts..."
 gh pr review 123 --dismiss
 ```
 
+> ⚠️ **Native `gh pr review` only supports overall review status** (approve/request-changes/comment with a summary body).
+> It does **NOT** support:
+> - Inline comments on specific code lines
+> - Replying to existing review threads (review comments)
+> - Resolving/unresolving review threads
+> - Structured review view with thread details
+>
+> For these operations, use the **[gh-pr-review extension](./pr-reviews.md)** which provides full inline code review capabilities.
+
 ## Update Branch
 
 ```bash
