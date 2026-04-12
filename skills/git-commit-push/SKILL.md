@@ -122,6 +122,42 @@ git add src/file1.ts src/file2.ts
 **3. 替换已创建PR的commit**
 如果commit已被push，且该分支已创建PR，禁止直接amend。
 
+### 分支合并策略（保持 PR 历史干净）
+
+**场景：将主分支更新合入功能分支时**
+
+**❌ 不推荐：使用 merge**
+```bash
+git merge master
+# 问题：会产生额外的 "Merge branch 'master' into feature/xxx" commit
+# PR 中会显示多余的合并提交，历史不够线性
+```
+
+**✅ 推荐：使用 rebase**
+```bash
+# 步骤1：更新本地主分支
+git checkout master && git pull origin master
+
+# 步骤2：切回功能分支并变基
+git checkout feature/your-feature
+git rebase master
+
+# 步骤3：如果之前已经推送过，需要强制推送（必须先征询用户意见）
+# ⚠️ force push 会重写远程历史，必须获得用户明确同意后才能执行
+git push --force-with-lease origin feature/your-feature
+```
+
+**优势：**
+- 保持线性提交历史，PR 只显示有意义的 commits
+- 避免多余的 merge commit 污染历史图
+- 符合大多数开源项目的贡献规范
+
+**⚠️ 注意事项：**
+- rebase 会重写提交历史，**仅在本地或个人分支上使用**
+- 如果已推送到远程并被他人基于开发，禁止 rebase
+- 公共分支（如 master/main）永远不要 rebase
+- **强制推送（force push）必须征询用户意见**，不得擅自执行
+
 ## 撤销操作规范
 
 ### 1. 撤销暂存

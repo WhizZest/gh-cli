@@ -51,9 +51,12 @@ Git commit & push workflow guidelines ensuring safe, user-approved commits.
 
 1. **User Approval Required** - Never execute `git commit` or `git push` without explicit user consent. Each operation requires separate approval.
 2. **Atomic Commits** - One logical change per commit. Complete a feature, then ask to commit.
-3. **Precise File Selection** - Never use `git add -A` or `git add .`. Always specify exact files to commit.
-4. **Temporary File Management** - Use `<workspace_dir>/temp/` directory for temporary files; never commit them accidentally.
-5. **Structured Commit Messages** - Follow conventional commit format; use temp files for multi-line messages.
+3. **Completeness** - Ensure code compiles/runs before committing. Don't commit half-finished work or debug code. Submit related files together to avoid omissions.
+4. **Timeliness** - Commit after completing small features. Don't accumulate large changes before committing.
+5. **Precise File Selection** - Never use `git add -A` or `git add .`. Always specify exact files to commit.
+6. **Temporary File Management** - Use `<workspace_dir>/temp/` directory for temporary files; never commit them accidentally.
+7. **Structured Commit Messages** - Follow conventional commit format; use temp files for multi-line messages.
+8. **Clean Branch History** - Use `git rebase` (not merge) when updating feature branch with master. Keep PR history linear. Force push requires user approval.
 
 **Key Guidelines:**
 ```bash
@@ -69,6 +72,13 @@ git diff --cached
 
 # ✅ CORRECT: Multi-line commit messages via file
 git commit --file=<workspace_dir>/temp/git-commit-msg.txt
+
+# ✅ CORRECT: Update feature branch with rebase (clean history)
+git checkout master && git pull
+git checkout feature/your-branch && git rebase master
+
+# ✅ CORRECT: Push only after user approval
+# Ask user before any push operation
 ```
 
 ## Repository Structure
