@@ -16,7 +16,7 @@ description: "Git初始化新仓库、提交与推送规范指南。执行git in
 - 日志文件：`*.log`
 - 测试文件：`*.test.*`
 - 构建输出：`build/`、`dist/`、`coverage/`
-- IDE配置文件：`.vscode/`、`.idea/`、`.gitignore`
+- IDE配置文件：`.vscode/`、`.idea/`
 - 依赖目录：`node_modules/`
 
 
