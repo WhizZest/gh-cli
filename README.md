@@ -7,7 +7,7 @@ AI agent skills for GitHub operations and Git workflow best practices.
 This repository contains two complementary skills for AI agents working with Git and GitHub:
 
 1. **[gh-cli](#gh-cli-skill)** - Comprehensive GitHub CLI (`gh`) reference covering all major GitHub operations
-2. **[git-commit-push](#git-commit-push-skill)** - Git commit & push workflow guidelines ensuring safe, atomic commits with user approval
+2. **[git-commit-push](#git-commit-push-skill)** - Git init, commit & push workflow guidelines ensuring proper repository setup, safe atomic commits with user approval
 
 ## Skills
 
@@ -43,9 +43,9 @@ Comprehensive GitHub CLI (gh) reference skill for AI agents.
 
 ### git-commit-push Skill
 
-Git commit & push workflow guidelines ensuring safe, user-approved commits.
+Git init, commit & push workflow guidelines ensuring proper repository initialization and safe, user-approved commits.
 
-**Description:** 规范化Git提交与推送流程，确保遵循用户审核、原子提交、精准文件选择等核心原则。基于实际错误案例总结的最佳实践。
+**Description:** 规范化Git初始化仓库、提交与推送流程，确保遵循.gitignore配置、用户审核、原子提交、精准文件选择等核心原则。基于实际错误案例总结的最佳实践。
 
 **Core Principles:**
 
@@ -192,7 +192,7 @@ The `git-commit-push` skill should be invoked automatically when an AI agent nee
 **NEVER use `--body` parameter!** Command-line argument parsing fails with special characters, especially backticks (\`) used in code blocks.
 
 ```bash
-# ✅ CORRECT, workspace_dir is the root directory of the project
+# ✅ CORRECT, workspace_dir is the workspace root (top-level directory containing all repositories). Exception: if workspace itself is a repository root, use that directory.
 gh pr create --title "Feature" --body-file workspace_dir/temp/description.md
 
 # ❌ WRONG - backticks cause escaping issues
@@ -204,7 +204,7 @@ gh pr create --title "Feature" --body "Use \`code()\` function..."
 **NEVER view PR comments directly in terminal!** Terminal output may be truncated, causing loss of important information.
 
 ```bash
-# ✅ CORRECT workflow, workspace_dir is the root directory of the project
+# ✅ CORRECT workflow, workspace_dir is the workspace root (top-level directory containing all repositories). Exception: if workspace itself is a repository root, use that directory.
 gh pr view 123 --comments > workspace_dir/temp/pr-123.md
 cat workspace_dir/temp/pr-123.md
 

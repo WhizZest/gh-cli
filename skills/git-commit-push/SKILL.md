@@ -1,11 +1,24 @@
 ---
 name: "git-commit-push"
-description: "Git提交与推送规范指南。执行git commit/push前必须调用，确保遵循用户审核、原子提交、精准文件选择等原则。"
+description: "Git初始化新仓库、提交与推送规范指南。执行git init/commit/push前必须调用，确保遵循用户审核、原子提交、精准文件选择等原则。"
 ---
 
-# Git Commit & Push 规范指南
+# Git init & Commit & Push 规范指南
 
-本skill总结了Git提交与推送的最佳实践、核心原则和工作流规范，所有操作都基于实际错误案例总结。
+本skill总结了Git初始化新仓库、提交与推送的最佳实践、核心原则和工作流规范，所有操作都基于实际错误案例总结。
+
+## Git init 核心原则
+
+在 `git init` 之后、第一次 `git add` 之前，必须创建 `.gitignore` 文件，排除不需要版本控制的文件。
+
+应该忽略的内容：
+- 临时文件：`temp/`
+- 日志文件：`*.log`
+- 测试文件：`*.test.*`
+- 构建输出：`build/`、`dist/`、`coverage/`
+- IDE配置文件：`.vscode/`、`.idea/`、`.gitignore`
+- 依赖目录：`node_modules/`
+
 
 ## Git Commit 核心原则
 
@@ -43,6 +56,8 @@ description: "Git提交与推送规范指南。执行git commit/push前必须调
 ✅ 提交前如果发现有临时文件，必须先将它们移动到 `<workspace_dir>/temp/`目录下
 ✅ 确认只有核心业务逻辑文件
 ```
+
+注意：workspace_dir 是工作区根目录，通常不是特定的仓库根目录，而是包含多个仓库，但如果仓库本身是工作区根目录，则应在.gitignore中忽略temp目录。
 
 ## Git Push 核心原则
 
@@ -89,7 +104,7 @@ git diff --cached
 
 类型：
 - feat: 新功能
-- fix: 修复bug
+- fix: 修复bug（如果bug来自issue，请引用issue编号，例如：#123，但如果bug来自其他来源，比如PR review，请勿使用"#"符号）
 - refactor: 重构
 - docs: 文档
 - style: 格式

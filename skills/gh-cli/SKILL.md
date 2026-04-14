@@ -99,7 +99,7 @@ This skill is organized into modular reference documents. Load only what you nee
 **NEVER use `--body` parameter!** Command-line argument parsing fails with special characters, especially backticks (`) used in code blocks. This causes escaping issues that result in garbled text or parsing errors.
 
 ```bash
-# ✅ CORRECT, workspace_dir is the root directory of the project
+# ✅ CORRECT, workspace_dir is the workspace root (top-level directory containing all repositories). Exception: if workspace itself is a repository root, use that directory.
 gh pr create --title "Feature" --body-file workspace_dir/temp/description.md
 
 # ❌ WRONG - backticks and special chars cause escaping issues
@@ -111,7 +111,7 @@ gh pr create --title "Feature" --body "Use `code()` function..."
 **NEVER view PR comments directly in terminal!** Output may be truncated.
 
 ```bash
-# ✅ CORRECT workflow, workspace_dir is the root directory of the project
+# ✅ CORRECT workflow, workspace_dir is the workspace root (top-level directory containing all repositories). Exception: if workspace itself is a repository root, use that directory.
 gh pr view 123 --comments > workspace_dir/temp/pr-123.md
 cat workspace_dir/temp/pr-123.md
 

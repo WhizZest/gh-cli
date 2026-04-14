@@ -27,23 +27,28 @@ gh pr-review --help
 
 ## Critical Best Practices
 
-### 1. Use `--body "$(cat file)"` Pattern for Comment Body
+### 1. Use `--body` with File Content Pattern for Comment Body
 
 The `gh-pr-review` extension only supports `--body string`, **NOT `--body-file`** like native `gh` commands.
 
 **NEVER pass `--body` with inline text containing special characters!** Backticks (`` ` ``) are escape characters in PowerShell and will cause garbled output or parsing errors.
 
 ```powershell
-# Step 1: Use the agent's built-in Write tool to create a temp file
-# (Do NOT use shell commands - backticks will be mangled by PowerShell)
-# workspace_dir is the root directory of the project
-# File content: Your comment with `backticks` and special chars
-
-# Step 2: Use command substitution to read file content
+# Windows (PowerShell)
+$body = Get-Content "workspace_dir/temp/review-body.md" -Raw
 gh pr-review review 123 --add-comment --path "src/main.py" --line 42 `
-  --body "$(cat workspace_dir/temp/review-body.md)" `
+  --body $body `
   --review-id "PRR_xxxxx"
+```
 
+```bash
+# Linux / macOS (bash)
+gh pr-review review 123 --add-comment --path "src/main.py" --line 42 \
+  --body "$(cat workspace_dir/temp/review-body.md)" \
+  --review-id "PRR_xxxxx"
+```
+
+```
 # ❌ WRONG - inline body with special characters
 gh pr-review review 123 --add-comment --body "Use `code()` function here..."
 ```
@@ -90,47 +95,41 @@ Native `gh pr review` only supports **overall** review status (approve/request-c
 ### Pending Review Workflow (3 Steps)
 
 ```bash
+# Linux / macOS (bash)
 # === Step 1: Start a pending review ===
-# This creates a draft review and returns a reviewId
 gh pr-review review 123 --start -R owner/repo
 # Output: {"reviewId":"PRR_lAbCdEf123456"}
-# SAVE this reviewId for subsequent commands!
 
 # === Step 2: Add inline comments (repeat as needed) ===
-
-# Single-line comment on new code (RIGHT side)
 gh pr-review review 123 \
-  --add-comment \
-  --path "src/main.py" \
-  --line 42 \
-  --side RIGHT \
+  --add-comment --path "src/main.py" --line 42 --side RIGHT \
   --body "Potential null pointer risk here" \
   --review-id "PRR_lAbCdEf123456"
 
-# Multi-line comment (spanning lines 10-20)
-gh pr-review review 123 \
-  --add-comment \
-  --path "src/utils.ts" \
-  --start-line 10 --start-side RIGHT \
-  --line 20 --side RIGHT \
-  --body "This entire function lacks error handling" \
-  --review-id "PRR_lAbCdEf123456"
-
-# Comment on removed code (LEFT side)
-gh pr-review review 123 \
-  --add-comment \
-  --path "src/legacy.js" \
-  --line 15 \
-  --side LEFT \
-  --body "Why was this check removed?" \
-  --review-id "PRR_lAbCdEf123456"
-
-# === Step 3: Submit the review ===
-gh pr-review review 123 \
-  --submit \
+# === Step 3: Submit ===
+gh pr-review review 123 --submit \
   --event REQUEST_CHANGES \
   --body "Please address the inline comments above" \
   --review-id "PRR_lAbCdEf123456"
+```
+
+```powershell
+# Windows (PowerShell)
+# === Step 1: Start a pending review ===
+$START_OUTPUT = gh pr-review review 123 --start -R owner/repo | ConvertFrom-Json
+$REVIEW_ID = $START_OUTPUT.reviewId
+
+# === Step 2: Add inline comments (repeat as needed) ===
+gh pr-review review 123 --add-comment `
+  --path "src/main.py" --line 42 --side RIGHT `
+  --body "Potential null pointer risk here" `
+  --review-id $REVIEW_ID
+
+# === Step 3: Submit ===
+gh pr-review review 123 --submit `
+  --event REQUEST_CHANGES `
+  --body "Please address the inline comments above" `
+  --review-id $REVIEW_ID
 ```
 
 ### Review Event Types
@@ -154,7 +153,7 @@ gh pr-review review 123 \
 | `--side` | Diff side: `RIGHT` (new code) or `LEFT` (old code) |
 | `--start-side` | Start side for multi-line range comment |
 | `--event` | `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` |
-| `--body` | Comment body text (**use `$(cat file)` pattern!**) |
+| `--body` | Comment body text (**PowerShell: `$body = Get-Content "file" -Raw` / bash: `$(cat file)`**) |
 | `--commit` | Commit SHA (defaults to current HEAD) |
 | `--review-id` | GraphQL review node ID from `--start` output |
 
@@ -164,8 +163,10 @@ gh pr-review review 123 \
 
 Reply to existing review threads (inline comments from reviewers).
 
+> **⚠️ Common mistake**: `gh pr reply` does NOT exist! Native `gh` has no `pr reply` subcommand. Always use the **gh-pr-review extension** for replying to review threads.
+
 ```bash
-# List unresolved threads first to find thread-id
+# Linux / macOS: List unresolved threads first to find thread-id
 gh pr-review threads list 123 -R owner/repo --unresolved > workspace_dir/temp/threads.md
 
 # Reply to a specific thread
@@ -175,37 +176,59 @@ gh pr-review comments reply 123 \
   --body "$(cat workspace_dir/temp/reply-body.md)"
 ```
 
+```powershell
+# Windows: List unresolved threads first to find thread-id
+gh pr-review threads list 123 -R owner/repo --unresolved > workspace_dir/temp/threads.md
+
+# Reply to a specific thread
+$body = Get-Content "workspace_dir/temp/reply-body.md" -Raw
+gh pr-review comments reply 123 `
+  -R owner/repo `
+  --thread-id "RT_mNoPqRsTuvWxyz" `
+  --body $body
+```
+
 ### When to Reply (PR Author Workflow)
 
 #### Scenario A: You pushed a fix → remind human reviewer
 
 ```powershell
-# Step 1: Use Write tool to create workspace_dir/temp/reply.md
-# File content: Fix pushed in abc1234 - please re-check
-
-# Step 2: Reply to notify
+# Windows (PowerShell)
+$body = Get-Content "workspace_dir/temp/reply.md" -Raw
 gh pr-review comments reply 123 -R owner/repo `
   --thread-id "RT_mNoPqRsTuvWxyz" `
+  --body $body
+```
+
+```bash
+# Linux / macOS (bash)
+gh pr-review comments reply 123 -R owner/repo \
+  --thread-id "RT_mNoPqRsTuvWxyz" \
   --body "$(cat workspace_dir/temp/reply.md)"
 ```
 
 #### Scenario B: You choose NOT to fix → explain why
 
 ```powershell
-# Step 1: Use Write tool to create workspace_dir/temp/reply.md
-# File content: This is intentional - the null case is handled upstream by the caller
-
-# Step 2: Reply with explanation
+# Windows (PowerShell)
+$body = Get-Content "workspace_dir/temp/reply.md" -Raw
 gh pr-review comments reply 123 -R owner/repo `
   --thread-id "RT_mNoPqRsTuvWxyz" `
+  --body $body
+```
+
+```bash
+# Linux / macOS (bash)
+gh pr-review comments reply 123 -R owner/repo \
+  --thread-id "RT_mNoPqRsTuvWxyz" \
   --body "$(cat workspace_dir/temp/reply.md)"
 ```
 
 #### Scenario C: Reviewer is AI Bot → wait and check
 
 ```powershell
-# Push fix, then wait 2 minutes for bot to auto-resolve
-Start-Sleep -Seconds 120
+# Push fix, then wait 2 minutes for bot to auto-resolve (with progress)
+120..1 | ForEach-Object { Write-Host "`r⏱️ 等待 AI Bot 审查... 剩余 $_ 秒" -NoNewline; Start-Sleep 1 }; Write-Host "`n✅ 2分钟已过，检查结果"
 
 # Check if thread is resolved
 gh pr-review threads list 123 -R owner/repo --unresolved
@@ -302,6 +325,7 @@ gh pr-review review view 123 -R owner/repo --tail 3
 ### As a Reviewer: Full Code Review Cycle
 
 ```bash
+# Linux / macOS (bash)
 # 1. View PR diff first
 gh pr diff 123 -R owner/repo > workspace_dir/temp/pr-diff.patch
 
@@ -322,9 +346,34 @@ gh pr-review review 123 --submit \
   --review-id "$REVIEW_ID"
 ```
 
+```powershell
+# Windows (PowerShell)
+# 1. View PR diff first
+gh pr diff 123 -R owner/repo > workspace_dir/temp/pr-diff.patch
+
+# 2. Start pending review
+$REVIEW_OUTPUT = gh pr-review review 123 --start -R owner/repo | ConvertFrom-Json
+$REVIEW_ID = $REVIEW_OUTPUT.reviewId
+
+# 3. Add inline comments while reading the diff
+$body1 = Get-Content "workspace_dir/temp/comment1.md" -Raw
+gh pr-review review 123 --add-comment `
+  --path "src/auth.ts" --line 25 --side RIGHT `
+  --body $body1 `
+  --review-id $REVIEW_ID
+
+# 4. Submit with verdict
+$bodySummary = Get-Content "workspace_dir/temp/review-summary.md" -Raw
+gh pr-review review 123 --submit `
+  --event REQUEST_CHANGES `
+  --body $bodySummary `
+  --review-id $REVIEW_ID
+```
+
 ### As PR Author: Fix & Respond Cycle
 
 ```bash
+# Linux / macOS (bash)
 # 1. Check what needs fixing
 gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspace_dir/temp/todo.md
 
@@ -332,6 +381,22 @@ gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspa
 git status
 git add <explicit-file-paths>
 git commit -m "Address review feedback" && git push
+
+# 3. Decide response based on reviewer type:
+#    - AI Bot: wait 2 min, then re-check threads
+#    - Human: reply to thread with notification
+#    - Or explain if not fixing
+```
+
+```powershell
+# Windows (PowerShell)
+# 1. Check what needs fixing
+gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspace_dir/temp/todo.md
+
+# 2. Make changes, commit, push
+git status
+git add <explicit-file-paths>
+git commit -m "Address review feedback"; git push
 
 # 3. Decide response based on reviewer type:
 #    - AI Bot: wait 2 min, then re-check threads
