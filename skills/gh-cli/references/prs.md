@@ -194,7 +194,7 @@ gh pr merge 123 --rebase
 gh pr merge 123 --delete-branch
 
 # Merge with comment
-gh pr merge 123 --subject "Merge PR #123" --body "Merging feature"
+gh pr merge 123 --subject "Merge PR #123" --body-file workspace_dir/temp/merge-comment.txt
 
 # Merge draft PR
 gh pr merge 123 --admin
@@ -278,15 +278,15 @@ gh pr checks 123 --watch --interval 5
 
 ```bash
 # Add comment
-gh pr comment 123 --body "Looks good!"
+gh pr comment 123 --body-file workspace_dir/temp/pr-comment.txt
 
 # Comment on specific line
-gh pr comment 123 --body "Fix this" \
+gh pr comment 123 --body-file workspace_dir/temp/pr-line-comment.txt \
   --repo owner/repo \
   --head-owner owner --head-branch feature
 
 # Edit comment
-gh pr comment 123 --edit 456789 --body "Updated"
+gh pr comment 123 --edit 456789 --body-file workspace_dir/temp/pr-edit-comment.txt
 
 # Delete comment
 gh pr comment 123 --delete 456789
@@ -299,14 +299,14 @@ gh pr comment 123 --delete 456789
 gh pr review 123
 
 # Approve PR
-gh pr review 123 --approve --body "LGTM!"
+gh pr review 123 --approve --body-file workspace_dir/temp/review-approve.txt
 
 # Request changes
 gh pr review 123 --request-changes \
-  --body "Please fix these issues"
+  --body-file workspace_dir/temp/review-request-changes.txt
 
 # Comment on PR
-gh pr review 123 --comment --body "Some thoughts..."
+gh pr review 123 --comment --body-file workspace_dir/temp/review-comment.txt
 
 # Dismiss review
 gh pr review 123 --dismiss

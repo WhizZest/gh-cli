@@ -14,7 +14,7 @@ gh issue create --title "Bug: Login not working"
 # Create with title and body
 gh issue create \
   --title "Bug: Login not working" \
-  --body "Steps to reproduce..."
+  --body-file workspace_dir/temp/issue-body.txt
 
 # Create with body from file
 gh issue create --body-file workspace_dir/temp/issue.md
@@ -102,7 +102,7 @@ gh issue edit 123
 gh issue edit 123 --title "New title"
 
 # Edit body
-gh issue edit 123 --body "New description"
+gh issue edit 123 --body-file workspace_dir/temp/issue-edit-body.txt
 
 # Add labels
 gh issue edit 123 --add-label bug,high-priority
@@ -205,10 +205,10 @@ gh issue comment 123 --edit-last --body-file updated-comment.txt
 
 ```bash
 # Add comment
-gh issue comment 123 --body "This looks good!"
+gh issue comment 123 --body-file workspace_dir/temp/issue-comment.txt
 
 # Edit comment
-gh issue comment 123 --edit 456789 --body "Updated comment"
+gh issue comment 123 --edit 456789 --body-file workspace_dir/temp/issue-edit-comment.txt
 
 # Delete comment
 gh issue comment 123 --delete 456789

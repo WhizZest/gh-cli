@@ -140,7 +140,7 @@ gh pr view 123 --comments > workspace_dir/temp/pr-123.md 2>&1
 gh issue develop 123 --branch feature/issue-123
 # Make changes, commit, push
 git add . && git commit -m "Fix #123" && git push
-gh pr create --title "Fix #123" --body "Closes #123"
+gh pr create --title "Fix #123" --body-file workspace_dir/temp/pr-description.md
 ```
 
 ### Fork Sync Workflow
