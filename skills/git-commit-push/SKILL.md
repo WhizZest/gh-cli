@@ -65,6 +65,7 @@ description: "Git初始化新仓库、提交与推送规范指南。执行git in
 - 不要推送编译失败或有明显 bug 的代码
 - 确保代码通过基本测试
 - 不要频繁推送微小修改，积累几个 commit 再统一推送
+- 已推送的 commit 视为"不可变"，发现问题 → 新增 commit 修复
 
 ### 为什么不要“频繁 Push”？
 
@@ -136,6 +137,8 @@ git add src/file1.ts src/file2.ts
 
 **3. 替换已创建PR的commit**
 如果commit已被push，且该分支已创建PR，禁止直接amend。
+
+正确做法是创建新的commit，不要amend。
 
 ### 分支合并策略（保持 PR 历史干净）
 
