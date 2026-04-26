@@ -408,6 +408,5 @@ git commit -m "Address review feedback"; git push
 
 ## See Also
 
-- **[Main SKILL.md](../SKILL.md)** - Return to main documentation
-- **[Pull Requests](./prs.md)** - Native `gh pr` commands (create, list, merge, etc.)
-- **[API & Advanced](./advanced.md)** - Direct API calls, extensions management
+- **[[references/prs.md|Pull Requests]]** - Native `gh pr` commands (create, list, merge, etc.)
+- **[[references/advanced.md|API & Advanced]]** - Direct API calls, extensions management

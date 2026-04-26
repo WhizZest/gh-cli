@@ -66,31 +66,31 @@ This skill is organized into modular reference documents. Load only what you nee
 
 ### Core Operations
 
-- **[Authentication](references/auth.md)** - Login, token management, account switching
-- **[Repositories](references/repo.md)** - Create, clone, fork, edit, delete repos
-- **[Issues](references/issues.md)** - Create, list, comment, manage issues
-- **[Pull Requests](references/prs.md)** - PR workflows, reviews, merges ⚠️ **Critical warnings inside**
-- **[PR Reviews (Extension)](references/pr-reviews.md)** - Inline code review, review threads, gh-pr-review extension
+- **[[references/auth.md|Authentication]]** - Login, token management, account switching
+- **[[references/repo.md|Repositories]]** - Create, clone, fork, edit, delete repos
+- **[[references/issues.md|Issues]]** - Create, list, comment, manage issues
+- **[[references/prs.md|Pull Requests]]** - PR workflows, reviews, merges ⚠️ **Critical warnings inside**
+- **[[references/pr-reviews.md|PR Reviews]]** - Inline code review, review threads, gh-pr-review extension
 
 ### Automation & CI/CD
 
-- **[GitHub Actions](references/actions.md)** - Workflows, runs, secrets, variables
-- **[Search](references/search.md)** - Code, commits, issues, PRs, repos search
+- **[[references/actions.md|GitHub Actions]]** - Workflows, runs, secrets, variables
+- **[[references/search.md|Search]]** - Code, commits, issues, PRs, repos search
 
 ### Project Management
 
-- **[Projects](references/projects.md)** - GitHub Projects management
-- **[Releases](references/releases.md)** - Release creation and asset management
+- **[[references/projects.md|Projects]]** - GitHub Projects management
+- **[[references/releases.md|Releases]]** - Release creation and asset management
 
 ### Development Tools
 
-- **[Gists](references/gists.md)** - Gist creation and management
-- **[Codespaces](references/codespaces.md)** - Remote development environments
+- **[[references/gists.md|Gists]]** - Gist creation and management
+- **[[references/codespaces.md|Codespaces]]** - Remote development environments
 
 ### Advanced Features
 
-- **[API & Advanced](references/advanced.md)** - API calls, extensions, aliases, labels, SSH/GPG keys
-- **[Configuration](references/config.md)** - Environment setup, output formatting, best practices
+- **[[references/advanced.md|API & Advanced]]** - API calls, extensions, aliases, labels, SSH/GPG keys
+- **[[references/config.md|Configuration]]** - Environment setup, output formatting, best practices
 
 ## Critical Best Practices
 
