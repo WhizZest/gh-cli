@@ -103,26 +103,37 @@ gh pr list --sort created --order desc
 
 **NEVER view PR comments directly in terminal!** Terminal output may be truncated, causing loss of important information like review comments, code suggestions, and error details. Always export to a local file first.
 
-**Standard PR Viewing Workflow:**
+**⚠️ CRITICAL: `gh pr view --comments` does NOT show inline review comments!**
+
+`--comments` only shows PR-level conversation comments. Inline code review comments (line-specific feedback, bug reports, suggestions) are a separate resource and require `gh pr-review review view`. **You MUST run both commands** to see all feedback on a PR. Missing inline review comments means missing bugs, security issues, and code suggestions.
+
+**Standard PR Viewing Workflow (TWO steps, both required):**
 
 ```bash
-# Step 1: Export PR content to local file
-gh pr view 123 --comments > pr-123-view.md
+# Step 0: Ensure temp directory exists
+mkdir -p workspace_dir/temp
 
-# Step 2: Read the file to view complete content
-cat pr-123-view.md
+# Step 1: Export PR conversation comments (PR-level only)
+gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 
-# Step 3: Clean up (optional)
-rm pr-123-view.md
+# Step 2: Export inline review comments (code-level feedback, bugs, suggestions)
+gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+
+# Step 3: Read both files for complete picture
+cat workspace_dir/temp/pr-123-comments.md
+cat workspace_dir/temp/pr-123-reviews.md
 ```
+
+> 💡 **Why two commands?** GitHub has two separate comment systems: PR Comments (conversation-level) and Review Comments (code-line-level). `gh pr view --comments` only fetches the former. For the latter, use the **[[references/pr-reviews.md|gh-pr-review extension]]**.
 
 **⚠️ PowerShell Redirection Warning:**
 
 In PowerShell, `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable:
 
 ```powershell
-# CORRECT in PowerShell
-gh pr view 123 --comments > pr-123-view.md
+# CORRECT in PowerShell (ensure temp directory exists first)
+mkdir -p workspace_dir/temp
+gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 
 # WRONG: Out-File may produce incomplete output
 gh pr view 123 --comments | Out-File -FilePath pr-123-view.md  # ❌
@@ -192,6 +203,11 @@ gh pr merge 123 --rebase
 
 # Delete branch after merge
 gh pr merge 123 --delete-branch
+
+# Prune stale remote tracking references after branch deletion
+# --delete-branch only deletes the remote branch on GitHub;
+# local refs/remotes/ cache is not auto-cleaned
+git remote prune origin
 
 # Merge with comment
 gh pr merge 123 --subject "Merge PR #123" --body-file workspace_dir/temp/merge-comment.txt
@@ -319,7 +335,7 @@ gh pr review 123 --dismiss
 > - Resolving/unresolving review threads
 > - Structured review view with thread details
 >
-> For these operations, use the **[gh-pr-review extension](./pr-reviews.md)** which provides full inline code review capabilities.
+> For these operations, use the **[[references/pr-reviews.md|gh-pr-review extension]]** which provides full inline code review capabilities.
 
 ## Update Branch
 
@@ -368,6 +384,5 @@ gh pr status --repo owner/repo
 ```
 
 ## See Also
-- [Main SKILL.md](../SKILL.md) - Return to main documentation
-- [Issues](./issues.md) - Issue management
-- [Advanced Workflows](./advanced.md) - Common PR workflows
+- [[references/issues.md|Issues]] - Issue management
+- [[references/advanced.md|Advanced Workflows]] - Common PR workflows
