@@ -110,6 +110,9 @@ gh pr list --sort created --order desc
 **Standard PR Viewing Workflow (TWO steps, both required):**
 
 ```bash
+# Step 0: Ensure temp directory exists
+mkdir -p workspace_dir/temp
+
 # Step 1: Export PR conversation comments (PR-level only)
 gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 
@@ -128,8 +131,9 @@ cat workspace_dir/temp/pr-123-reviews.md
 In PowerShell, `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable:
 
 ```powershell
-# CORRECT in PowerShell
-gh pr view 123 --comments > pr-123-view.md
+# CORRECT in PowerShell (ensure temp directory exists first)
+mkdir -p workspace_dir/temp
+gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 
 # WRONG: Out-File may produce incomplete output
 gh pr view 123 --comments | Out-File -FilePath pr-123-view.md  # ❌
