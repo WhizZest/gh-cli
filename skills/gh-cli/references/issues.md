@@ -2,6 +2,45 @@
 
 Complete reference for GitHub issue management commands.
 
+## ⚠️ Critical Best Practices
+
+### 1. Always Use `--body-file` for Issue Content
+
+**NEVER use `--body` parameter!** Command-line argument parsing fails with special characters, especially backticks (`` ` ``) used in code blocks. This causes escaping issues that result in garbled text or parsing errors. Always create a local markdown file first and use `--body-file`.
+
+```bash
+# ✅ CORRECT, workspace_dir is the workspace root (top-level directory containing all repositories). Exception: if workspace itself is a repository root, use that directory.
+gh issue create --title "Bug" --body-file workspace_dir/temp/issue-body.md
+
+# ❌ WRONG - backticks and special chars cause escaping issues
+gh issue create --title "Bug" --body "Use `code()` function..."
+```
+
+### 2. Export Output to Files Before Viewing
+
+**NEVER view long output directly in terminal!** Output may be truncated.
+
+```bash
+# ✅ CORRECT
+gh issue view 123 --comments > workspace_dir/temp/issue-123.md
+
+# ❌ WRONG (may lose data)
+gh issue view 123 --comments
+```
+
+### 3. PowerShell Redirection Warning
+
+In PowerShell, only `>` redirection is reliable:
+
+```powershell
+# ✅ CORRECT
+gh issue view 123 --comments > workspace_dir/temp/issue-123.md
+
+# ❌ WRONG
+gh issue view 123 --comments | Out-File workspace_dir/temp/issue-123.md
+gh issue view 123 --comments > workspace_dir/temp/issue-123.md 2>&1
+```
+
 ## Create Issue
 
 ```bash
