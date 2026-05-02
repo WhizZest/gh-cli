@@ -318,7 +318,7 @@ Get a comprehensive, machine-readable overview of all reviews on a PR.
 mkdir -p workspace_dir/temp
 
 # Step 1: Export review data to file
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Step 2: Read the exported file
 cat workspace_dir/temp/pr-123-reviews.md
@@ -327,7 +327,7 @@ cat workspace_dir/temp/pr-123-reviews.md
 ```powershell
 # Windows (PowerShell)
 mkdir workspace_dir/temp
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # WRONG: Out-File may produce incomplete output
 gh pr-review review view 123 -R owner/repo | Out-File -FilePath pr-review.md  # ❌
@@ -340,19 +340,19 @@ gh pr-review review view 123 -R owner/repo > pr-review.md 2>&1  # ❌
 
 ```bash
 # Unresolved threads only, exclude outdated
-gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo --unresolved --not_outdated | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Filter by specific reviewer
-gh pr-review review view 123 -R owner/repo --reviewer alice > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo --reviewer alice | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Filter by review state(s)
-gh pr-review review view 123 -R owner/repo --states APPROVED,CHANGES_REQUESTED > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo --states APPROVED,CHANGES_REQUESTED | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Include comment_node_id (useful for scripting replies)
-gh pr-review review view 123 -R owner/repo --include-comment-node-id > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo --include-comment-node-id | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Limit replies per thread (reduce noise)
-gh pr-review review view 123 -R owner/repo --tail 3 > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo --tail 3 | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 ```
 
 ### View Parameters Reference
