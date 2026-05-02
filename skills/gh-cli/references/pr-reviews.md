@@ -55,14 +55,30 @@ gh pr-review review 123 --add-comment --body "Use `code()` function here..."
 
 ### 2. Export Review Output to Files
 
-**NEVER view review output directly in terminal!** Output may be truncated.
+**NEVER view review output directly in terminal!** Output may be truncated. Always export to a local file first, then read it.
+
+**⚠️ Redirection Warning:** `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable.
+
+**TraeAI Terminal:** In the TraeAI agent terminal, `2>&1` merges stderr into stdout BEFORE `>` redirect, corrupting the output file. If you must capture stderr, use parentheses: `(gh pr-review review view ... > file) 2>&1`.
+
+**JSON Output:** `gh pr-review review view` outputs single-line JSON. Pipe through `python -m json.tool` for readable formatting before writing to file.
 
 ```powershell
-# ✅ CORRECT
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-review-123.md
+# ✅ CORRECT (ensure temp directory exists first)
+mkdir workspace_dir/temp
+gh pr-review review view 123 -R owner/repo | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # ❌ WRONG (may lose data)
 gh pr-review review view 123 -R owner/repo
+
+# ❌ WRONG: Out-File may produce incomplete output
+gh pr-review review view 123 -R owner/repo | Out-File -FilePath pr-review.md
+
+# ❌ WRONG: 2>&1 corrupts output in TraeAI terminal
+gh pr-review review view 123 -R owner/repo > pr-review.md 2>&1
+
+# ✅ If stderr capture is needed, use parentheses
+(gh pr-review review view 123 -R owner/repo > pr-review.md) 2>&1
 ```
 
 ---
@@ -287,24 +303,56 @@ gh pr-review threads unresolve 123 \
 
 Get a comprehensive, machine-readable overview of all reviews on a PR.
 
-```bash
-# Full review summary (export to file!)
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-review-123.md
+**⚠️ CRITICAL: Always export review output to local file for viewing**
 
+**NEVER view review output directly in terminal!** Output may be truncated, causing loss of important information like bug reports, code suggestions, and error details.
+
+**⚠️ Redirection Warning:** `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable.
+
+**TraeAI Terminal:** In the TraeAI agent terminal, `2>&1` merges stderr into stdout BEFORE `>` redirect, corrupting the output file (e.g., only `--` in the file). If you must capture stderr, use parentheses: `(gh pr-review review view ... > file) 2>&1`.
+
+**JSON Output:** `gh pr-review review view` outputs single-line JSON. Pipe through `python -m json.tool` for readable formatting before writing to file.
+
+```bash
+# Step 0: Ensure temp directory exists
+mkdir -p workspace_dir/temp
+
+# Step 1: Export review data to file
+gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+
+# Step 2: Read the exported file
+cat workspace_dir/temp/pr-123-reviews.md
+```
+
+```powershell
+# Windows (PowerShell)
+mkdir workspace_dir/temp
+gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+
+# WRONG: Out-File may produce incomplete output
+gh pr-review review view 123 -R owner/repo | Out-File -FilePath pr-review.md  # ❌
+
+# WRONG: 2>&1 may produce empty output
+gh pr-review review view 123 -R owner/repo > pr-review.md 2>&1  # ❌
+```
+
+### Filter Options
+
+```bash
 # Unresolved threads only, exclude outdated
-gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspace_dir/temp/pr-review-open.md
+gh pr-review review view 123 -R owner/repo --unresolved --not_outdated > workspace_dir/temp/pr-123-reviews.md
 
 # Filter by specific reviewer
-gh pr-review review view 123 -R owner/repo --reviewer alice
+gh pr-review review view 123 -R owner/repo --reviewer alice > workspace_dir/temp/pr-123-reviews.md
 
 # Filter by review state(s)
-gh pr-review review view 123 -R owner/repo --states APPROVED,CHANGES_REQUESTED
+gh pr-review review view 123 -R owner/repo --states APPROVED,CHANGES_REQUESTED > workspace_dir/temp/pr-123-reviews.md
 
 # Include comment_node_id (useful for scripting replies)
-gh pr-review review view 123 -R owner/repo --include-comment-node-id
+gh pr-review review view 123 -R owner/repo --include-comment-node-id > workspace_dir/temp/pr-123-reviews.md
 
 # Limit replies per thread (reduce noise)
-gh pr-review review view 123 -R owner/repo --tail 3
+gh pr-review review view 123 -R owner/repo --tail 3 > workspace_dir/temp/pr-123-reviews.md
 ```
 
 ### View Parameters Reference

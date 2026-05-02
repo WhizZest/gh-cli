@@ -37,8 +37,10 @@ description: GitHub CLI (gh) comprehensive reference for repositories, issues, p
 
 | 文档 | 适用场景 |
 |------|----------|
-| [[references/prs.md\|Pull Requests]] | PR 创建、查看、合并、分支清理 |
+| [[references/prs.md\|Pull Requests]] | PR 创建、查看（含 Review 查看流程）、合并、分支清理 |
 | [[references/pr-reviews.md\|PR Reviews]] | 行内代码审查、review 线程、gh-pr-review 扩展 |
+
+> ⚠️ **查看 PR Review 时，两个文档都需要阅读！** `prs.md` 包含查看 Review 的完整流程（Step 0→3），`pr-reviews.md` 包含高级过滤参数和回复/解决线程的详细操作。跳过任何一个都会遗漏关键信息。
 
 ### CI/CD 与自动化
 

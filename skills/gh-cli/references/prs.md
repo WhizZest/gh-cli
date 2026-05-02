@@ -107,7 +107,13 @@ gh pr list --sort created --order desc
 
 `--comments` only shows PR-level conversation comments. Inline code review comments (line-specific feedback, bug reports, suggestions) are a separate resource and require `gh pr-review review view`. **You MUST run both commands** to see all feedback on a PR. Missing inline review comments means missing bugs, security issues, and code suggestions.
 
-**Standard PR Viewing Workflow (TWO steps, both required):**
+**⚠️ Redirection Warning:**
+
+`| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable.
+
+**TraeAI Terminal:** In the TraeAI agent terminal, `2>&1` merges stderr into stdout BEFORE `>` redirect, corrupting the output file (e.g., only `--` in the file). If you must capture stderr, use parentheses: `(gh pr view ... > file) 2>&1`.
+
+**Standard PR Viewing Workflow (4 steps, all required):**
 
 ```bash
 # Step 0: Ensure temp directory exists
@@ -119,27 +125,31 @@ gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 # Step 2: Export inline review comments (code-level feedback, bugs, suggestions)
 gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
 
-# Step 3: Read both files for complete picture
+# Step 3: Read both exported files for complete picture
 cat workspace_dir/temp/pr-123-comments.md
 cat workspace_dir/temp/pr-123-reviews.md
 ```
 
 > 💡 **Why two commands?** GitHub has two separate comment systems: PR Comments (conversation-level) and Review Comments (code-line-level). `gh pr view --comments` only fetches the former. For the latter, use the **[[references/pr-reviews.md|gh-pr-review extension]]**.
 
-**⚠️ PowerShell Redirection Warning:**
+> 📖 **For advanced review viewing options** (filter by `--unresolved`, `--not_outdated`, `--reviewer`, etc.), see **[[references/pr-reviews.md#4-structured-review-view|PR Reviews §4 Structured Review View]]**.
 
-In PowerShell, `| Out-File` and `2>&1` may NOT work correctly with `gh` output. Only `>` redirection is reliable:
+**PowerShell redirection examples:**
 
 ```powershell
 # CORRECT in PowerShell (ensure temp directory exists first)
-mkdir -p workspace_dir/temp
+mkdir workspace_dir/temp
 gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
+gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
 
 # WRONG: Out-File may produce incomplete output
 gh pr view 123 --comments | Out-File -FilePath pr-123-view.md  # ❌
 
-# WRONG: 2>&1 may produce empty output
+# WRONG: 2>&1 corrupts output in TraeAI terminal
 gh pr view 123 --comments > pr-123-view.md 2>&1  # ❌
+
+# If stderr capture is needed, use parentheses
+(gh pr view 123 --comments > pr-123-view.md) 2>&1  # ✅
 ```
 
 **Other viewing options:**
