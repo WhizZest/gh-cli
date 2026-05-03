@@ -123,7 +123,7 @@ mkdir -p workspace_dir/temp
 gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
 
 # Step 2: Export inline review comments (code-level feedback, bugs, suggestions)
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # Step 3: Read both exported files for complete picture
 cat workspace_dir/temp/pr-123-comments.md
@@ -140,7 +140,7 @@ cat workspace_dir/temp/pr-123-reviews.md
 # CORRECT in PowerShell (ensure temp directory exists first)
 mkdir workspace_dir/temp
 gh pr view 123 --comments > workspace_dir/temp/pr-123-comments.md
-gh pr-review review view 123 -R owner/repo > workspace_dir/temp/pr-123-reviews.md
+gh pr-review review view 123 -R owner/repo | python -m json.tool > workspace_dir/temp/pr-123-reviews.md
 
 # WRONG: Out-File may produce incomplete output
 gh pr view 123 --comments | Out-File -FilePath pr-123-view.md  # ❌
